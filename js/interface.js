@@ -29,6 +29,15 @@ var dsQueryData = {
       }
     ]
   },
+  accessRules: [
+    {
+      allow: 'all',
+      enabled: true,
+      type: [
+        'select'
+      ]
+    }
+  ],
   result: data.dataSourceQuery
 };
 
