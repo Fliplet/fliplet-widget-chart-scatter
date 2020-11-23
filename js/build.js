@@ -2,18 +2,26 @@
   window.ui = window.ui || {}
   ui.flipletCharts = ui.flipletCharts || {};
 
+  Fliplet.Chart = Fliplet.Widget.Namespace('chart');
+
   function init() {
     Fliplet.Widget.instance('chart-scatter', function (data) {
       var chartId = data.id;
       var chartUuid = data.uuid;
       var $container = $(this);
       var refreshTimeout = 5000;
+      var refreshTimer;
       var updateDateFormat = 'hh:mm:ss a';
       var colors = [
         '#00abd1', '#ed9119', '#7D4B79', '#F05865', '#36344C',
         '#474975', '#8D8EA6', '#FF5722', '#009688', '#E91E63'
       ];
-      var chartInstance;      
+      var chartInstance;
+
+      var chartReady;
+      var chartPromise = new Promise(function(resolve) {
+        chartReady = resolve;
+      });
 
       function resetData() {
         data.entries = [];
@@ -112,25 +120,28 @@
         return Promise.resolve(chart);
       }
 
-      function getLatestData() {
-        return new Promise(function (resolve, reject) {
-          setTimeout(function () {
-            refreshData().then(function () {
-              if (data.autoRefresh) {
-                getLatestData();
-              }
+      function refresh() {
+        return refreshData().then(function () {
+          if (data.autoRefresh) {
+            setRefreshTimer();
+          }
 
-              refreshChart();
-              resolve();
-            }).catch(function (err) {
-              if (data.autoRefresh) {
-                getLatestData();
-              }
+          return refreshChart();
+        }).catch(function (err) {
+          if (data.autoRefresh) {
+            setRefreshTimer();
+          }
 
-              reject(err);
-            });
-          }, refreshTimeout);
+          return Promise.reject(err);
         });
+      }
+
+      function setRefreshTimer() {
+        if (refreshTimer) {
+          clearTimeout(refreshTimer);
+        }
+
+        refreshTimer = setTimeout(refresh, refreshTimeout);
       }
 
       Fliplet.Studio.onEvent(function(event) {
@@ -163,7 +174,7 @@
             var newColor = customColors
               ? customColors.values[colorKey]
               : Fliplet.Themes.Current.get(colorKey);
-            
+
             if (newColor) {
               colors[index] = newColor;
             }
@@ -180,7 +191,7 @@
                 load: function(){
                   refreshChartInfo();
                   if (data.autoRefresh) {
-                    getLatestData();
+                    setRefreshTimer();
                   }
                 },
                 render: function () {
@@ -331,7 +342,15 @@
 
       refreshData().then(drawChart).catch(function(error){
         console.error(error);
-        getLatestData();
+        setRefreshTimer();
+      });
+
+      Fliplet.Chart.add(chartPromise);
+
+      chartReady({
+        name: data.chartName,
+        type: 'scatter',
+        refresh: refresh
       });
     });
   }
