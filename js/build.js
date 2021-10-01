@@ -13,7 +13,6 @@
       var inheritColor2 = true;
       var refreshTimeout = 5000;
       var refreshTimer;
-      var updateDateFormat = 'hh:mm:ss a';
       var colors = [
         '#00abd1', '#ed9119', '#7D4B79', '#F05865', '#36344C',
         '#474975', '#8D8EA6', '#FF5722', '#009688', '#E91E63'
@@ -24,6 +23,8 @@
       var chartPromise = new Promise(function(resolve) {
         chartReady = resolve;
       });
+
+      $container.translate();
 
       function resetData() {
         data.entries = [];
@@ -103,9 +104,9 @@
 
       function refreshChartInfo() {
         // Update total count
-        $container.find('.total').html(data.totalEntries);
+        $container.find('.total').html(TN(data.totalEntries));
         // Update last updated time
-        $container.find('.updatedAt').html(moment().format(updateDateFormat));
+        $container.find('.updatedAt').html(TD(new Date(), { format: 'LTS' }));
       }
 
       function refreshChart() {
@@ -280,7 +281,7 @@
               labels: {
                 formatter: function(){
                   if (data.dataFormat === 'timestamp') {
-                    return moment(this.value).format('YYYY-MM-DD');
+                    return TD(this.value, { format: 'L' });
                   }
                   return this.value;
                 }
