@@ -1,0 +1,12 @@
+{
+  "widgets": {
+    "chart": {
+      "scatter": {
+        "title": "Scatter Chart",
+        "instruction": "Start configuring your component and the chart will appear here.",
+        "total": "Total",
+        "updatedAt": "Last updated"
+      }
+    }
+  }
+}
