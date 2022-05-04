@@ -398,7 +398,7 @@
       Fliplet.Hooks.on('appearanceChanged', redrawChart);
       Fliplet.Hooks.on('appearanceFileChanged', redrawChart);
 
-      refreshData().then(drawChart).catch(function(error){
+      Fliplet().then(refreshData).then(drawChart).catch(function(error){
         console.error(error);
         setRefreshTimer();
       });
@@ -413,14 +413,13 @@
     });
   }
 
-  Fliplet().then(function(){
-    var debounceLoad = _.debounce(init, 500, { leading: true });
-    Fliplet.Studio.onEvent(function (event) {
-      if (event.detail.event === 'reload-widget-instance') {
-        debounceLoad();
-      }
-    });
+  var debounceLoad = _.debounce(init, 500, { leading: true });
 
-    init();
+  Fliplet.Studio.onEvent(function (event) {
+    if (event.detail.event === 'reload-widget-instance') {
+      debounceLoad();
+    }
   });
+
+  init();
 })();
