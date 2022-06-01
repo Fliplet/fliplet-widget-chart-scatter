@@ -27,6 +27,8 @@ Fliplet.Widget.instance("chart-scatter-1-1-0", function (data) {
     chartReady = resolve;
   });
 
+  Fliplet.Chart.add(chartPromise);
+
   function init() {
     window.ui = window.ui || {};
     ui.flipletCharts = ui.flipletCharts || {};
@@ -449,8 +451,6 @@ Fliplet.Widget.instance("chart-scatter-1-1-0", function (data) {
         console.error(error);
         setRefreshTimer();
       });
-
-    Fliplet.Chart.add(chartPromise);
 
     chartReady({
       id: data.id,
