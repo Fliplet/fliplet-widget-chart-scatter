@@ -1,0 +1,11 @@
+{
+  "widgets": {
+    "charts": {
+      "scatter": {
+        "total": "Total",
+        "lastUpdated": "Last updated",
+        "label": "{{label}}: "
+      }
+    }
+  }
+}
