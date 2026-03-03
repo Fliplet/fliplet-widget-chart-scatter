@@ -54,7 +54,7 @@ Fliplet.Widget.instance('chart-scatter-1-1-0', function(data) {
           type: 'scatter'
         });
       }).then(function() {
-        if (_.isFunction(data.getData)) {
+        if (Fliplet.Utils.isFunction(data.getData)) {
           var response = data.getData();
 
           if (!(response instanceof Promise)) {
@@ -432,7 +432,7 @@ Fliplet.Widget.instance('chart-scatter-1-1-0', function(data) {
   }
 
   Fliplet().then(function() {
-    var debounceLoad = _.debounce(init, 500, { leading: true });
+    var debounceLoad = Fliplet.Utils.debounce(init, 500, { leading: true });
 
     Fliplet.Studio.onEvent(function(event) {
       if (event.detail.event === 'reload-widget-instance') {
